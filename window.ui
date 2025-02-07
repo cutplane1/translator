@@ -56,6 +56,20 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QComboBox" name="lang_select">
+         <item>
+          <property name="text">
+           <string>English</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Russian</string>
+          </property>
+         </item>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>

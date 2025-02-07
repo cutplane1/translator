@@ -16,9 +16,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
-    QMenuBar, QPlainTextEdit, QPushButton, QSizePolicy,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QMainWindow,
+    QMenu, QMenuBar, QPlainTextEdit, QPushButton,
+    QSizePolicy, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -69,6 +69,13 @@ class Ui_MainWindow(object):
 
         self.buttons_grid.addWidget(self.btn_flip)
 
+        self.lang_select = QComboBox(self.horizontalLayoutWidget)
+        self.lang_select.addItem("")
+        self.lang_select.addItem("")
+        self.lang_select.setObjectName(u"lang_select")
+
+        self.buttons_grid.addWidget(self.lang_select)
+
 
         self.h_grid.addLayout(self.buttons_grid)
 
@@ -98,6 +105,9 @@ class Ui_MainWindow(object):
         self.actionDeepL.setText(QCoreApplication.translate("MainWindow", u"DeepL", None))
         self.btn_trans.setText(QCoreApplication.translate("MainWindow", u"Translate", None))
         self.btn_flip.setText(QCoreApplication.translate("MainWindow", u"Flip", None))
+        self.lang_select.setItemText(0, QCoreApplication.translate("MainWindow", u"English", None))
+        self.lang_select.setItemText(1, QCoreApplication.translate("MainWindow", u"Russian", None))
+
         self.menutest.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.menuProvider.setTitle(QCoreApplication.translate("MainWindow", u"Provider", None))
     # retranslateUi

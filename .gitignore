@@ -1,1 +1,8 @@
 __pycache__/
+.secrets
+main.build/
+main.dist/
+main.onefile-build/
+dist/
+main.exe
+something.config
