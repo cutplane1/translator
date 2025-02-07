@@ -57,9 +57,17 @@ class HotkeyThread(QtCore.QThread):
     def stop(self):
         pass
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
-    window.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-    window.show()
-    sys.exit(app.exec())
+class Translator:
+    def __init__(self, hotkey='alt+k'):
+        self.hotkey = hotkey
+
+    def run(self):
+        app = QtWidgets.QApplication(sys.argv)
+        window = MainWindow(self.hotkey)
+        window.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        window.show()
+        sys.exit(app.exec())    
+
+
+t = Translator()
+t.run()
