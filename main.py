@@ -13,6 +13,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_trans.clicked.connect(self.translate)
         self.btn_flip.clicked.connect(self.switch)
 
+    def showEvent(self, event):
+        self.from_trans.setPlainText(self.from_trans.toPlainText()[:-2])
+
     def translate(self):
         self.to_trans.setPlainText("DEBUG: " + self.from_trans.toPlainText())
     
@@ -27,7 +30,7 @@ app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()
 
 is_hidden = False
-def flip_window():
+def flip_window(window):
     global is_hidden
     if is_hidden:
         window.show()
@@ -36,7 +39,7 @@ def flip_window():
         window.hide()
         is_hidden = True
 
-keyboard.add_hotkey("alt+k", flip_window)
+keyboard.add_hotkey("alt+k", flip_window, args=(window,))
 
 window.show()
 app.exec()
