@@ -1,6 +1,5 @@
 import sys
 from PySide6 import QtWidgets, QtCore
-from PySide6.QtGui import QKeySequence, QShortcut
 from window import Ui_MainWindow
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -32,8 +31,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.hide()
         else:
             self.show()
-            self.from_trans.setPlainText(self.from_trans.toPlainText()[:-1])
             self.activateWindow()
+            self.from_trans.setPlainText(self.from_trans.toPlainText()[:-1])
 
     def closeEvent(self, event):
         self.hotkey_thread.stop()
