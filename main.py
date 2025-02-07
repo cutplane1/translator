@@ -5,7 +5,7 @@ from window import Ui_MainWindow
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     toggle_visibility = QtCore.Signal()
 
-    def __init__(self):
+    def __init__(self, hotkey='alt+k'):
         super().__init__()
         self.setupUi(self)
         
@@ -14,7 +14,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.toggle_visibility.connect(self.flip_window)
         
-        self.hotkey_thread = HotkeyThread('alt+k', self.toggle_visibility)
+        self.hotkey_thread = HotkeyThread(hotkey, self.toggle_visibility)
         self.hotkey_thread.start()
 
     def translate(self):
@@ -32,7 +32,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.show()
             self.activateWindow()
-            self.from_trans.setPlainText(self.from_trans.toPlainText()[:-1])
+            a = self.from_trans.toPlainText()
+            if len(a) > 0:
+                self.from_trans.setPlainText(a[:-1])
+
 
     def closeEvent(self, event):
         self.hotkey_thread.stop()
@@ -43,7 +46,6 @@ class HotkeyThread(QtCore.QThread):
         super().__init__()
         self.hotkey = hotkey
         self.signal = signal
-        self.running = True
 
     def run(self):
         import keyboard
@@ -53,10 +55,11 @@ class HotkeyThread(QtCore.QThread):
         self.signal.emit()
 
     def stop(self):
-        self.running = False
+        pass
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
+    window.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
     window.show()
     sys.exit(app.exec())
