@@ -29,9 +29,9 @@
       <height>191</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="h_grid">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="textboxes_grid">
        <item>
         <widget class="QPlainTextEdit" name="from_trans"/>
        </item>
@@ -41,7 +41,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="buttons_grid">
        <item>
         <widget class="QPushButton" name="btn_trans">
          <property name="text">
@@ -72,11 +72,29 @@
    </property>
    <widget class="QMenu" name="menutest">
     <property name="title">
-     <string>test</string>
+     <string>Settings</string>
     </property>
+    <widget class="QMenu" name="menuProvider">
+     <property name="title">
+      <string>Provider</string>
+     </property>
+     <addaction name="actionGoogle"/>
+     <addaction name="actionDeepL"/>
+    </widget>
+    <addaction name="menuProvider"/>
    </widget>
    <addaction name="menutest"/>
   </widget>
+  <action name="actionGoogle">
+   <property name="text">
+    <string>Google</string>
+   </property>
+  </action>
+  <action name="actionDeepL">
+   <property name="text">
+    <string>DeepL</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
