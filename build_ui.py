@@ -1,7 +1,7 @@
 import subprocess
 
 UI_FILE = "window.ui" 
-GEN_FILE = "window.py"
+GEN_FILE = "window_generated.py"
 
 result = subprocess.run(["pyside6-uic", UI_FILE], capture_output=True, text=True, check=True)
 

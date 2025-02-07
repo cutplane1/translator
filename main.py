@@ -1,6 +1,6 @@
 import sys
 from PySide6 import QtWidgets, QtCore
-from window import Ui_MainWindow
+from window_generated import Ui_MainWindow
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     toggle_visibility = QtCore.Signal()
