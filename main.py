@@ -1,5 +1,6 @@
 import sys, keyboard
 from PySide6 import QtWidgets
+from PySide6.QtGui import QKeySequence, QShortcut
 
 from window import Ui_MainWindow
 
@@ -11,7 +12,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.btn_trans.clicked.connect(self.translate)
         self.btn_flip.clicked.connect(self.switch)
-    
+
     def translate(self):
         self.to_trans.setPlainText("DEBUG: " + self.from_trans.toPlainText())
     
