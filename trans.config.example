@@ -1,0 +1,10 @@
+deepl_api_key=aaaaaaaa-1337-1234-abcd-qwertyuiop42:fx
+google_api_key=whatever
+
+api=deepl
+#api=google
+
+window_hide_hotkey=Alt+K
+translate_hotkey=Ctrl+Return
+
+languages=en,ja,de

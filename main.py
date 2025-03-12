@@ -1,18 +1,24 @@
+import os
 import sys
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtGui import QKeySequence, QShortcut
 from window_generated import Ui_MainWindow
+import keyboard
+import provider
 import deepl
+import googletrans
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     toggle_visibility = QtCore.Signal()
+    last_lang = ''
 
-    def __init__(self, w_hotkey='alt+k', r_hotkey='Ctrl+Return', adapter=None):
+    def __init__(self, w_hotkey='alt+k', r_hotkey='Ctrl+Return', adapter=None, langs=['en']):
         super().__init__()
         self.setupUi(self)
 
         self.adapter = adapter
-
+        self.last_lang = 'en'
+        self.lang_select.addItems(langs)
         self.btn_trans.clicked.connect(self.translate)
         self.btn_flip.clicked.connect(self.switch)
 
@@ -26,18 +32,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def translate(self):
         text = self.from_trans.toPlainText()
         if len(text) > 0:
-            s_lang = self.lang_select.currentText()
-            if s_lang == 'English':
-                lang = "EN-US"
-            if s_lang == 'Russian':
-                lang = "RU"
+            lang = self.lang_select.currentText()
             self.btn_trans.setEnabled(False)
             self.translation_thread = TranslationThread(self.adapter, text, lang)
             self.translation_thread.translation_finished.connect(self.update_translation_result)
             self.translation_thread.start()
 
-    def update_translation_result(self, result):
+    def update_translation_result(self, lang, result):
         self.btn_trans.setEnabled(True)
+        self.last_lang = lang.lower()
         self.to_trans.setPlainText(result)
 
     def switch(self):
@@ -47,7 +50,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.to_trans.setPlainText(p1)
 
         f = self.lang_select.currentIndex()
-        self.lang_select.setCurrentIndex(1 - f)
+        self.lang_select.setCurrentText(self.last_lang.lower())
 
 
     def flip_window(self):
@@ -72,7 +75,6 @@ class HotkeyThread(QtCore.QThread):
         self.signal = signal
 
     def run(self):
-        import keyboard
         keyboard.add_hotkey(self.hotkey, self.emit_signal)
 
     def emit_signal(self):
@@ -83,7 +85,7 @@ class HotkeyThread(QtCore.QThread):
 
 
 class TranslationThread(QtCore.QThread):
-    translation_finished = QtCore.Signal(str)
+    translation_finished = QtCore.Signal(str, str)
 
     def __init__(self, adapter, text, target_lang):
         super().__init__()
@@ -93,34 +95,28 @@ class TranslationThread(QtCore.QThread):
 
     def run(self):
         try:
-            result = self.adapter.translate(self.text, self.target_lang)
-            self.translation_finished.emit(result)
-        except deepl.exceptions.AuthorizationException as e:
-            print("Authorization error: API key is invalid")
-            self.translation_finished.emit("Authorization error: API key is invalid")
+            lang, result = self.adapter.translate(self.text, self.target_lang)
+            self.translation_finished.emit(lang, result)
+        except Exception as e:
+            if type(e) == deepl.exceptions.AuthorizationException:
+                print("[DEEPL] Authorization error: API key is invalid")
+                self.translation_finished.emit("en", "[DEEPL] Authorization error: API key is invalid")
+            elif type(e) == deepl.exceptions.DeepLException:
+                print("[DEEPL] This language is not supported")
+                self.translation_finished.emit("en", "[DEEPL] This language is not supported")
 
+            else:
+                print(e)
+                self.translation_finished.emit(str(e))
 
-class DeepLAdapter:
-    def __init__(self, auth_key):
-        self.auth_key = auth_key
-        self.deepl_client = deepl.Translator(self.auth_key)
-
-    def translate(self, text, target_lang):
-        result = self.deepl_client.translate_text(text, target_lang=target_lang)
-        return result.text
-
-
-def get_secret():
-    with open(".secrets", "r") as f:
-        return f.read()
 
 class Config:
     window_hide_hotkey = ''
     translate_hotkey = ''
-    deepl_api = ''
-
-    def __init__(self):
-        pass
+    deepl_api_key = ''
+    google_api_key = ''
+    api = ''
+    languages = []
     
     def parse(self, rec):
         for line in rec.splitlines():
@@ -131,30 +127,61 @@ class Config:
                 self.window_hide_hotkey = v
             elif k == 'translate_hotkey':
                 self.translate_hotkey = v
-            elif k == 'deepl_api':
-                self.deepl_api = v
+            elif k == 'deepl_api_key':
+                self.deepl_api_key = v
+            elif k == 'google_api_key':
+                self.google_api_key = v
+            elif k == 'api':
+                self.api = v
+            elif k == 'languages':
+                self.languages = v.split(',')
             else:
                 raise ValueError(f"Unknown config key: {k}")
 
 
 class Translator:
-    def __init__(self):
-        pass
-
     def run(self):
         app = QtWidgets.QApplication(sys.argv)
+        """have mercy"""
         try:
-            with open("something.config", "r") as f:
+            with open("trans.config", "r", encoding="utf-8") as f:
                 config = Config()
                 config.parse(f.read())
-        except FileNotFoundError:
-            print("Config file (something.config) not found")
-            QtWidgets.QMessageBox.critical(None,'Config Error!',"Config file (something.config) not found", QtWidgets.QMessageBox.Abort)
-            return
-        window = MainWindow(config.window_hide_hotkey, config.translate_hotkey, DeepLAdapter(config.deepl_api))
+        except Exception as e:
+            if type(e) == ValueError:
+                self.invalid_config()
+                return
+            if type(e) == FileNotFoundError:
+                try:
+                    a = os.getenv('APPDATA')
+                    with open(a + "/trans.config", "r", encoding="utf-8") as f:
+                        config = Config()
+                        config.parse(f.read())
+                except Exception as e:
+                    if type(e) == FileNotFoundError:
+                        self.file_not_found()
+                    if type(e) == ValueError:
+                        self.invalid_config()
+                    return
+
+        adapter = None
+        if config.api == 'deepl':
+            adapter = provider.DeepLProvider(config.deepl_api_key)
+        elif config.api == 'google':
+            adapter = provider.GoogleProvider()
+
+        window = MainWindow(config.window_hide_hotkey, config.translate_hotkey, adapter, config.languages)
         window.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         window.show()
         sys.exit(app.exec())
+
+    def file_not_found(self):
+        print("Config file (trans.config) not found")
+        QtWidgets.QMessageBox.critical(None,'Config Error!',"Config file (trans.config) not found", QtWidgets.QMessageBox.Abort)
+    
+    def invalid_config(self):
+        print("Invalid config file (trans.config)")
+        QtWidgets.QMessageBox.critical(None,'Config Error!',"Config file (trans.config) is invalid", QtWidgets.QMessageBox.Abort)
 
 t = Translator()
 t.run()

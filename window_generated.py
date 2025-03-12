@@ -17,14 +17,14 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QMainWindow,
-    QMenu, QMenuBar, QPlainTextEdit, QPushButton,
-    QSizePolicy, QVBoxLayout, QWidget)
+    QPlainTextEdit, QPushButton, QSizePolicy, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(739, 246)
+        MainWindow.resize(733, 224)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayoutWidget = QWidget(self.centralwidget)
         self.horizontalLayoutWidget.setObjectName(u"horizontalLayoutWidget")
-        self.horizontalLayoutWidget.setGeometry(QRect(10, 10, 711, 191))
+        self.horizontalLayoutWidget.setGeometry(QRect(0, 0, 731, 221))
         self.h_grid = QHBoxLayout(self.horizontalLayoutWidget)
         self.h_grid.setObjectName(u"h_grid")
         self.h_grid.setContentsMargins(0, 0, 0, 0)
@@ -70,8 +70,6 @@ class Ui_MainWindow(object):
         self.buttons_grid.addWidget(self.btn_flip)
 
         self.lang_select = QComboBox(self.horizontalLayoutWidget)
-        self.lang_select.addItem("")
-        self.lang_select.addItem("")
         self.lang_select.setObjectName(u"lang_select")
 
         self.buttons_grid.addWidget(self.lang_select)
@@ -80,19 +78,6 @@ class Ui_MainWindow(object):
         self.h_grid.addLayout(self.buttons_grid)
 
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 739, 22))
-        self.menutest = QMenu(self.menubar)
-        self.menutest.setObjectName(u"menutest")
-        self.menuProvider = QMenu(self.menutest)
-        self.menuProvider.setObjectName(u"menuProvider")
-        MainWindow.setMenuBar(self.menubar)
-
-        self.menubar.addAction(self.menutest.menuAction())
-        self.menutest.addAction(self.menuProvider.menuAction())
-        self.menuProvider.addAction(self.actionGoogle)
-        self.menuProvider.addAction(self.actionDeepL)
 
         self.retranslateUi(MainWindow)
 
@@ -105,10 +90,5 @@ class Ui_MainWindow(object):
         self.actionDeepL.setText(QCoreApplication.translate("MainWindow", u"DeepL", None))
         self.btn_trans.setText(QCoreApplication.translate("MainWindow", u"Translate", None))
         self.btn_flip.setText(QCoreApplication.translate("MainWindow", u"Flip", None))
-        self.lang_select.setItemText(0, QCoreApplication.translate("MainWindow", u"English", None))
-        self.lang_select.setItemText(1, QCoreApplication.translate("MainWindow", u"Russian", None))
-
-        self.menutest.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
-        self.menuProvider.setTitle(QCoreApplication.translate("MainWindow", u"Provider", None))
     # retranslateUi
 

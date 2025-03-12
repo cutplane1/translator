@@ -5,4 +5,5 @@ main.dist/
 main.onefile-build/
 dist/
 main.exe
+trans.config
 something.config
