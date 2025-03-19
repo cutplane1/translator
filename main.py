@@ -122,7 +122,7 @@ class Config:
         for line in rec.splitlines():
             if line.startswith('#'):
                 continue
-            k, v = line.split('=')
+            k, v = line.strip().split('=')
             if k == 'window_hide_hotkey':
                 self.window_hide_hotkey = v
             elif k == 'translate_hotkey':
