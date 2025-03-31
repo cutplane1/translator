@@ -1,5 +1,5 @@
 # (Trans)lator
-*like [pot translator](https://github.com/pot-app/pot-desktop/blob/master/README_EN.md) but more minimalistic (or worse)*
+*it's like [pot translator](https://github.com/pot-app/pot-desktop/blob/master/README_EN.md) but more minimalistic (or worse)*
 
 GUI for translation services
 
