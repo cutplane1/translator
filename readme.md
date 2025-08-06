@@ -1,6 +1,6 @@
 # (Trans)lator
 *it's like [pot translator](https://github.com/pot-app/pot-desktop/blob/master/README_EN.md) but more minimalistic (or worse)*
-
+![screenshot](https://github.com/cutplane1/translator/blob/main/Screenshot%202025-08-06%20222623.png)
 GUI for translation services
 
 ## Config
